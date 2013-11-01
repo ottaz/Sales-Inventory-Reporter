@@ -33,14 +33,41 @@ $total=null; //needs to be global
 // our rest object
 $rest = new RESTConnector();
 
+$config = array();
+
+if (file_exists("config/config.php"))
+{
+    $tmpconfig = require("config/config.php");
+    if (isset($tmpconfig['urlbase']))
+        $config['urlbase'] = $tmpconfig['urlbase'];
+
+    if (isset($tmpconfig['user']))
+        $config['user'] = $tmpconfig['user'];
+
+    if (isset($tmpconfig['pass']))
+        $config['pass'] = $tmpconfig['pass'];
+
+    if (isset($tmpconfig['mysqlserver']))
+        $config['mysqlserver'] = $tmpconfig['mysqlserver'];
+
+    if (isset($tmpconfig['mysqluser']))
+        $config['mysqluser'] = $tmpconfig['mysqluser'];
+
+    if (isset($tmpconfig['mysqlpass']))
+        $config['mysqlpass'] = $tmpconfig['mysqlpass'];
+}
+else
+    die("ERROR: Missing configuration parameters.");
+
+
 // mysql login info
-$link = mysqli_connect('localhost', 'kevin', 'kevin') or die(mysqli_error($link));
+$link = mysqli_connect($config['mysqlserver'], $config['mysqluser'], $config['mysqlpass']) or die(mysqli_error($link));
 
 checkdbexists($link);
 
 $lup = getdatelastupdatedb($link);
 
-$urlbase = "https://localhost:9630/api/";
+$urlbase = $config['urlbase'];
 //$urlbase = "https://10.70.0.95:9630/api/";
 
 $sales = array();
@@ -122,7 +149,7 @@ elseif (isset($_POST['update'])) {
 }
 
     //GET CLASSES
-    $rest->createRequest($classesurl,"GET", null, $_SESSION['cookies'][0]);
+    $rest->createRequest($classesurl,"GET", null, $_SESSION['cookies'][0],$config['user'],$config['pass']);
     $rest->sendRequest();
     $response = $rest->getResponse();
     $error = $rest->getError();
@@ -221,7 +248,7 @@ elseif (isset($_POST['update'])) {
 
 //GET PRODUCTS
 $productstemp=array();
-$rest->createRequest($productsurl,"GET", null, $_SESSION['cookies'][0]);
+$rest->createRequest($productsurl,"GET", null, $_SESSION['cookies'][0],$config['user'],$config['pass']);
 $rest->sendRequest();
 $response = $rest->getResponse();
 $error = $rest->getError();
@@ -276,7 +303,7 @@ else
 
 //GET EACH PRODUCT
 foreach ($productstemp as $k => $r){
-$rest->createRequest((string)$r,"GET", null, $_SESSION['cookies'][0]);
+$rest->createRequest((string)$r,"GET", null, $_SESSION['cookies'][0],$config['user'],$config['pass']);
 $rest->sendRequest();
 $response = $rest->getResponse();
 $error = $rest->getError();
@@ -323,7 +350,7 @@ else
 
 // GET INVOICES
 $invoicestemp=array();
-$rest->createRequest($salesurl,"GET", null, $_SESSION['cookies'][0]);
+$rest->createRequest($salesurl,"GET", null, $_SESSION['cookies'][0],$config['user'],$config['pass']);
 $rest->sendRequest();
 $response = $rest->getResponse();
 $error = $rest->getError();
@@ -381,7 +408,7 @@ else
 $j=0;
 $lineitemstemp=array();
 foreach ($invoicestemp as $k => $r){
-$rest->createRequest((string)$r ,"GET", null, $_SESSION['cookies'][0]);
+$rest->createRequest((string)$r ,"GET", null, $_SESSION['cookies'][0],$config['user'],$config['pass']);
 $rest->sendRequest();
 $response = $rest->getResponse();
 $error = $rest->getError();
@@ -433,7 +460,7 @@ else
 // WRITE LINE ITEMS TO MYSQL DB
 
 foreach ($lineitemstemp as $k => $r){
-$rest->createRequest((string)$r['uri'] ,"GET", null, $_SESSION['cookies'][0]);
+$rest->createRequest((string)$r['uri'] ,"GET", null, $_SESSION['cookies'][0],$config['user'],$config['pass']);
 $rest->sendRequest();
 $response = $rest->getResponse();
 $error = $rest->getError();

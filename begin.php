@@ -37,6 +37,8 @@
     if ($error!=null)
         die('LOGIN EXCEPTION: '.$exception);
 
+    $temp = null;
+
     if ($response!=null || $response!="")
     {
         $temp = simplexml_load_string($response);
@@ -51,6 +53,8 @@
                     $temp->user->name->first,
                     $temp->user->name->last);
     }
+    else
+        die('ERROR: Please verify server is online/running.');
 
     // Connect to mysql
     $link = mysqli_connect($_POST['mysqlserver'], $_POST['mysqluser'], $_POST['mysqlpass']) or die(mysqli_error($link));
@@ -95,26 +99,34 @@
 		<tr>
 			<td>
 				<h3 class="sansserif" align="center">LSS API Custom Reporter</h3>
-                                <h2 class="sansserif" align="center">Summarized Sales and Inventory</h2>
+                <h2 class="sansserif" align="center">Summarized Sales and Inventory</h2>
 			</td>
 		</tr>
 		<tr>
 			<td>
 			<table border="0"  width="100%">
+                <tr>
+                    <td style="padding-right:20px; width:50%">
+                        <p align="right" class="sansserif">logged in as:</p>
+                    </td>
+                    <td style="padding-left:20px; width:50%">
+                        <p class="sansserif"><?php echo $temp->user->name->first.' '.$temp->user->name->last; ?></p>
+                    </td>
+                </tr>
 				<tr>
 					<td style="padding-right:20px; width:50%">
-					<p align="right" class="sansserif"><i>database last updated</i></p>
+					    <p align="right" class="sansserif"><i>database last updated</i></p>
 					</td>
 					<td style="padding-left:20px; width:50%">
-					<p class="sansserif"><?php echo $datelastupdated; ?></p>
+					    <p class="sansserif"><?php echo $datelastupdated; ?></p>
 					</td>
 				</tr>
 			</table>
 			</td>
 		</tr>
-                <tr>
-                    <td>
-                        <table border="0" width="100%">
+        <tr>
+            <td>
+                <table border="0" width="100%">
                             <tr>
                                 <td style="padding-right:20px; width:25%">
 				<p align="center" class="sansserif">From</p>
@@ -244,25 +256,27 @@
         -->
         <tr>
             <td>
-                <p align="center">
-                    <input type="submit" value="Update database" name="update">
-                </p>
+            <table align="center">
+                <tr>
+                    <td>
+                        <p align="center">
+                            <input type="submit" value="Update database" name="update">
+                        </p>
+                    </td>
+                    <td>
+                        <p align="center">
+                            <input type="submit" value="Reset database" name="reset">
+                        </p>
+                    </td>
+                    <td>
+                        <p align="center">
+                            <input type="submit" value="GENERATE REPORT" name="generate">
+                        </p>
+                    </td>
+                </tr>
+            </table>
             </td>
         </tr>
-        <tr>
-            <td>
-                <p align="center">
-                    <input type="submit" value="Reset database" name="reset">
-                </p>
-            </td>
-        </tr>
-		<tr>
-			<td>
-				<p align="center">
-				<input type="submit" value="GENERATE REPORT" name="generate">
-				</p>
-			</td>
-		</tr>
 		<tr>
 			<td>
 				<p align="center" class="footer">About | <a href="mailto:ldx@lightspeedretail.com">Support</a></p>
