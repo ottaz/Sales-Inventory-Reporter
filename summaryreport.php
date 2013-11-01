@@ -295,6 +295,8 @@ if ($response!=null || $response!="") {
         // Sleep one second so we can see the delay
         // usleep(2500);
     }
+
+    unset($temp);
 }
 else
 	echo "There was no response.";
@@ -397,6 +399,8 @@ if ($response!=null || $response!="") {
         // Sleep one second so we can see the delay
         // usleep(2500);
     }
+
+    unset($temp);
 }
 else
 	echo "There was no response.";
